@@ -2,7 +2,7 @@
 set -eu
 
 WORKSPACE="${WORKSPACE:-$HOME/workspace}"
-SKELETON="${SKELETON:-SanjeevThapaUG/workspace}"
+SKELETON="${SKELETON:-sanjeevhq/workspace}"
 
 say() { printf '\033[1;36m▸ %s\033[0m\n' "$*"; }
 
