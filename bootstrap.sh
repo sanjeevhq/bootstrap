@@ -32,14 +32,18 @@ github_login() {
   BROWSER=echo gh auth login --hostname github.com --git-protocol https --web
 }
 
-clone_workspace() {
-  if [ -d "$WORKSPACE/.git" ]; then say "Workspace present at $WORKSPACE"; return; fi
-  say "Cloning $SKELETON → $WORKSPACE"
-  gh repo clone "$SKELETON" "$WORKSPACE"
-}
-
 install_base_tools
 github_login
-clone_workspace
+
+if [ -d "$WORKSPACE/.git" ]; then
+  say "Workspace present — syncing"
+  cd "$WORKSPACE"
+  git pull -q --ff-only
+  [ -d shared/dev-harness/.git ] && git -C shared/dev-harness pull -q --ff-only
+  exec just sync
+fi
+
+say "Cloning $SKELETON → $WORKSPACE"
+gh repo clone "$SKELETON" "$WORKSPACE"
 cd "$WORKSPACE"
 exec just setup
