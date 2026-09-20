@@ -1,11 +1,14 @@
 #!/bin/sh
 # Layer 1 — bootstrap a fresh machine into the workspace.
 #
-#   curl -fsSL https://raw.githubusercontent.com/SanjeevThapaUG/workspace/main/shared/machines/bootstrap.sh | sh
+#   curl -fsSL https://raw.githubusercontent.com/SanjeevThapaUG/bootstrap/main/bootstrap.sh | sh
 #
 # Does exactly four things and never grows: install git/just/gum/gh, log in to
 # GitHub, clone the workspace skeleton to ~/workspace, hand off to `just setup`.
 # Everything else lives in setup/ so it can be re-run without this script.
+#
+# The workspace repo is private, so this file is mirrored to the public
+# SanjeevThapaUG/bootstrap repo by `just publish-bootstrap`. Edit it here, then publish.
 set -eu
 
 WORKSPACE="${WORKSPACE:-$HOME/workspace}"
@@ -38,8 +41,8 @@ esac
 # The skeleton is private: gh's credential helper lets us clone over HTTPS
 # before any SSH key exists on this machine. Keys are set up by `just setup`.
 if ! gh auth status >/dev/null 2>&1; then
-  say "Log in to GitHub (opens a device-code flow)"
-  gh auth login --hostname github.com --git-protocol https --web
+  say "Log in to GitHub: open the URL it prints on a machine with a browser, enter the code"
+  BROWSER=echo gh auth login --hostname github.com --git-protocol https --web
 fi
 
 if [ ! -d "$WORKSPACE/.git" ]; then
